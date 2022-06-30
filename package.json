@@ -10,15 +10,18 @@
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.1.3",
-    "hardhat": "^2.2.1",
+    "hardhat": "^2.9.9",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   },
   "scripts": {
     "build": "npx hardhat compile",
-    "test": "npx hardhat compile && npx hardhat test ./test/*.ts"
+    "test": "npx hardhat compile && npx hardhat test ./test/erc20.ts",
+    "testgrants": "npx hardhat compile && npx hardhat test ./test/grants.ts"
+
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.0",
     "@typechain/ethers-v5": "^6.0.5",
     "@typechain/truffle-v5": "^4.0.1",
     "@typechain/web3-v1": "^2.2.0",

@@ -9,16 +9,16 @@ contract ERC20 {
     // The name of the erc20 token
     string public name;
     // The symbol of the erc20 token
-    string public  symbol;
+    string public symbol;
     // The decimals of the erc20 token, should default to 18 for new tokens
-    uint8 public  decimals;
+    uint8 public decimals;
     // The total supply of tokens
     uint256 public totalSupply;
 
     // A mapping which tracks user token balances
-    mapping(address => uint256) public  balanceOf;
+    mapping(address => uint256) public balanceOf;
     // A mapping which tracks which addresses a user allows to move their tokens
-    mapping(address => mapping(address => uint256)) public  allowance;
+    mapping(address => mapping(address => uint256)) public allowance;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
@@ -53,11 +53,7 @@ contract ERC20 {
     /// @param amount The amount user token to send
     /// @return returns true on success, reverts on failure so cannot return false.
     /// @dev transfers to this contract address or 0 will fail
-    function transfer(address recipient, uint256 amount)
-        public
-        
-        returns (bool)
-    {
+    function transfer(address recipient, uint256 amount) public returns (bool) {
         // We forward this call to 'transferFrom'
         return transferFrom(msg.sender, recipient, amount);
     }
@@ -72,7 +68,7 @@ contract ERC20 {
         address spender,
         address recipient,
         uint256 amount
-    ) public  returns (bool) {
+    ) public returns (bool) {
         // Load balance and allowance
         uint256 balance = balanceOf[spender];
         require(balance >= amount, "ERC20: insufficient-balance");
@@ -111,7 +107,7 @@ contract ERC20 {
     ///          to track total supply.
     /// @param account the account to addd tokens to
     /// @param amount the amount of tokens to add
-    function _mint(address account, uint256 amount) internal  {
+    function _mint(address account, uint256 amount) internal {
         // Increase account balance
         balanceOf[account] = balanceOf[account] + amount;
         // Increase total supply
@@ -123,7 +119,7 @@ contract ERC20 {
     /// @notice This function s the ERC20Permit Library's _burn to decrement total supply
     /// @param account the account to burn from
     /// @param amount the amount of token to burn
-    function _burn(address account, uint256 amount) internal  {
+    function _burn(address account, uint256 amount) internal {
         // Decrease user balance
         balanceOf[account] = balanceOf[account] - amount;
         // Decrease total supply
@@ -137,11 +133,7 @@ contract ERC20 {
     /// @param account The account which will be approve to transfer tokens
     /// @param amount The approval amount, if set to uint256.max the allowance does not go down on transfers.
     /// @return returns true for compatibility with the ERC20 standard
-    function approve(address account, uint256 amount)
-        public
-        
-        returns (bool)
-    {
+    function approve(address account, uint256 amount) public returns (bool) {
         // Set the senders allowance for account to amount
         allowance[msg.sender][account] = amount;
         // Emit an event to track approvals

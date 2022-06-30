@@ -1,0 +1,16 @@
+The onlyOwner function checks to make sure that either the calling account == the owner, OR(||)
+the calling account != the tx originator(the correct way to implement this would be to check that both the msg.sender == the owner AND(&&) that the tx origin == the msg.sender) This is a glaring security issue,
+as anyone can call functions meant only for the owner by simply deploying a passthrough contract and
+calling the function through that, as msg.sender would be the passthrough contract while tx.origin would be your EOA in that case.
+With this vulnerability in mind, we can call any function on the contract without restriction by deploying a passthrough contract we call it through. This allows us to:
+a.	Call claimProfits() and steal all ether currently accumulated in the contract
+b.	Call registerPool and register an arbitrary pool contract of our choosing
+c.	With a. and b. we can deposit 0.1 ether to a custom contract and loop the claimProfits() and  deposit() functions on our arbitrary pool(so we can specify our own bs token that we deposit) to mint an unlimited amount of Market Token
+d.	“lpTokens” in withdraw() appears to refer to Market Token as well(naming a bit confusing) so we can steal all the eth in the contract through that function after doing c. for what its worth as well
+If you put the wrong amount of tokens as a parameter for withdraw() you will either receive no tokens or too little tokens since the contract just blindly sends without checking how many it has(the pool on the withdraw ostensibly sends all the staked tokens back since there’s no amount parameter). The excess tokens will be left in the contract and will likely be scooped up by MEVooors calling withdraw() again with the amount of tokens left in the pool
+
+If an account were to acquire more than 1 LP token(distributable is multiplied by more than one), they could take more than the excess value in the contract, eating into the owners profits. What is the point of this mechanism anyway? Where would the excess ether even come from? Typically if there’s a mechanism to remove ether or tokens that are accidentally sent into a contract or the balance is unexpected, there’s a skim function that any account can call. Further, since the owner(and anyone else with half a brain lol) can rug the contract balance at any time the deficit calculation is going to be an underestimation since the total supply LP tokens minted before depositprofits() was called.
+
+This is all I see after a cursory examination, maybe there’s more but I’ve already covered several different bugs and ways to rug the contract out of all the value stored within. This contract is implementing flawed concepts in an odd and non-defensive manner and honestly has to be the worst Solidity contract I’ve ever read through.
+
+
